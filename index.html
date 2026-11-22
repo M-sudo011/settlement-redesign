@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#E9EDEE" />
+  <meta name="description" content="نمونه تعاملی تسویه اعتبار رانندگان تپسی" />
+  <title>تسویه اعتبار | نمونه تعاملی تپسی رانندگان</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+    :root {
+      --screen:#E9EDEE;
+      --surface:#FFFFFF;
+      --ink:#141516;
+      --secondary:#606567;
+      --subtle:#8A9092;
+      --divider:#EEF0F0;
+      --inactive:#F3F4F4;
+      --soft:#F7F8F8;
+      --green:#16865C;
+      --green-bg:#ECF8F1;
+      --green-border:#CCE9D9;
+      --border:#E5E8E9;
+      --danger:#D43D39;
+      --shadow:0 14px 48px rgba(21,27,32,.13);
+      --font:'Vazirmatn','Noto Sans Arabic',Tahoma,Arial,sans-serif;
+    }
+    * {box-sizing:border-box}
+    html,body {margin:0;min-height:100%;background:#EDEFF0;color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased}
+    button,input {font:inherit} button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #478AE5;outline-offset:3px}
+    button:disabled{cursor:not-allowed} svg{display:block;flex:none}
+    .workspace{min-height:100vh;display:flex;direction:ltr;align-items:center;justify-content:center;gap:56px;padding:26px}
+    .guide{width:340px;direction:rtl;align-self:center}
+    .eyebrow{font-family:Arial,sans-serif;font-size:11px;letter-spacing:2.4px;font-weight:700;color:#70777A;direction:ltr;text-align:right}
+    .guide h1{font-size:28px;line-height:1.5;margin:12px 0 12px;letter-spacing:-.6px}
+    .guide p{font-size:13px;line-height:2.1;color:#535C5F;margin:0 0 16px}
+    .guide-grid{display:grid;gap:8px;margin-top:26px}
+    .guide-item{background:#FFF;border:1px solid #E2E5E6;border-radius:13px;display:flex;align-items:center;gap:12px;padding:13px}
+    .guide-num{width:28px;height:28px;border-radius:8px;background:#F0F2F2;color:#292D2E;display:grid;place-items:center;font:bold 12px Arial;flex:none}
+    .guide-item div:last-child{font-size:12px;line-height:1.9}
+    .guide-item strong{display:block;font-size:13px}
+    .guide-item span{color:#71797B}
+    .guide-foot{margin-top:22px;padding-top:15px;border-top:1px solid #CFD5D6;color:#81898B;font-size:11px;line-height:1.9}
+    .phone{width:390px;height:844px;max-height:calc(100dvh - 48px);min-height:630px;border:7px solid #25282A;border-radius:43px;position:relative;overflow:hidden;background:var(--screen);box-shadow:var(--shadow);direction:rtl;flex:none}
+    .screen{position:absolute;inset:0 0 25px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;background:var(--screen)}
+    .screen::-webkit-scrollbar{display:none}
+    .statusbar{height:27px;direction:ltr;display:flex;align-items:center;justify-content:space-between;padding:0 19px;font-family:Arial,sans-serif;font-size:12px;color:#414747;line-height:1}
+    .status-icons{display:flex;align-items:center;gap:5px}
+    .navbar{height:50px;display:flex;align-items:center;padding:0 19px;gap:12px}
+    .navbar h2{font-size:17px;letter-spacing:-.1px;font-weight:700;margin:0;flex:1}
+    .icon-btn{border:0;background:transparent;width:32px;height:36px;display:grid;place-items:center;padding:0;color:#1B1D1E}
+    .page{padding:10px 15px 20px}
+    .card{border-radius:15px;background:var(--surface);overflow:hidden}
+    .balance{padding:26px 21px 18px;text-align:center;margin-bottom:13px}
+    .eyetext{font-size:14px;font-weight:500;color:#3D4243}
+    .balance-value{font-size:31px;font-weight:800;line-height:1.6;margin:0 0 26px;direction:rtl;white-space:nowrap;letter-spacing:-.5px}
+    .balance-value small{font-size:17px;font-weight:600;margin-right:7px}
+    .balance-note{font-size:11px;color:#7C8283;border-top:1px solid #EBEDEE;padding-top:15px}
+    .discover{width:100%;display:flex;gap:11px;align-items:center;text-align:right;padding:14px 14px;background:#fff;border:1px solid #E3E8E6;border-radius:15px;margin:0 0 13px;min-height:81px;color:inherit}
+    .discover-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:14px;color:var(--green);background:var(--green-bg)}
+    .discover-copy{flex:1;min-width:0}
+    .discover-copy strong{font-size:13px;font-weight:700;display:block;line-height:1.65}
+    .discover-copy span{font-size:11px;color:var(--secondary);display:block;line-height:1.9;margin-top:2px}
+    .discover-arrow{color:#747C7C;flex:none}
+    .accounts{margin-bottom:12px}
+    .accounts-header{padding:15px 17px 10px;display:flex;gap:8px;align-items:center;justify-content:space-between}
+    .accounts-header strong{font-size:13px;font-weight:700}
+    .accounts-tools{display:flex;gap:10px;align-items:center}
+    .account-counter{font-size:11px;color:var(--subtle)}
+    .manage-action{border:0;background:transparent;display:flex;align-items:center;gap:4px;font-weight:600;font-size:11px;color:#4F5556;padding:4px 0 4px 5px}
+    .account-list{margin:0;padding:0;list-style:none}
+    .account-row{width:100%;display:flex;min-height:96px;align-items:center;text-align:right;gap:11px;background:white;border:0;border-bottom:1px solid var(--divider);padding:15px 16px 13px;color:var(--ink)}
+    .account-row:last-child{border-bottom:1px solid #EFF1F1}
+    .account-row:active{background:#FAFBFB}
+    .bank-symbol{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;flex:none;font-weight:800;font-size:11px;letter-spacing:-.8px;position:relative;isolation:isolate;overflow:hidden}
+    .bank-symbol::before{content:'';position:absolute;width:28px;height:28px;border:2px solid currentColor;border-radius:50%;opacity:.2;transform:rotate(30deg);z-index:-1}
+    .bank-symbol.melli{color:#AC7D31;background:#FFF8E8}
+    .bank-symbol.pasargad{color:#B88D22;background:#FFFAE9}
+    .bank-symbol.blue{color:#168BD1;background:#E8F8FF}
+    .bank-symbol.mellat{color:#D14349;background:#FFF0F0}
+    .bank-symbol.parsian{color:#D14545;background:#FFF0F1}
+    .bank-symbol.saderat{color:#226CBB;background:#EEF6FF}
+    .bank-symbol.resalat{color:#257D6E;background:#EDF9F5}
+    .bank-symbol.saman{color:#1896A5;background:#ECFAFD}
+    .bank-symbol.other{color:#65717A;background:#F1F4F5}
+    .bank-symbol.small{width:39px;height:39px;border-radius:13px}
+    .account-copy{flex:1;min-width:0}
+    .owner{font-size:13.5px;font-weight:700;line-height:1.55;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+    .bank-name{font-size:12.5px;color:#5F6666;display:block;line-height:1.65;margin-top:2px}
+    .capability{display:inline-flex;gap:5px;align-items:center;border-radius:6px;padding:3px 7px;margin-top:6px;font-size:10.5px;font-weight:600;line-height:1.7}
+    .capability.instant{background:var(--green-bg);color:var(--green)}
+    .capability.ach{background:#F4F5F5;color:#6F7677}
+    .circle{width:26px;height:26px;border:1.7px solid #1C1F20;border-radius:50%;display:grid;place-items:center;margin-right:1px;flex:none}
+    .circle.checked{background:#0F1112;border-color:#0F1112;color:white}
+    .trash{width:31px;height:31px;display:grid;place-items:center;color:#C54D4B;background:#FFF2F0;border-radius:8px}
+    .add-wrap{padding:13px 15px 14px}
+    .add-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:0;background:#111314;border-radius:24px;color:#fff;font-weight:700;font-size:13px}
+    .add-btn:disabled{color:#A5AAAB;background:#F1F2F2}
+    .account-limit{margin:9px 3px 0;text-align:center;font-size:10.5px;line-height:1.9;color:#919596}
+    .empty{margin:0;text-align:center;padding:25px 12px;font-size:12px;color:#7E8587}
+    .sheet-title{font-size:17px;font-weight:800;margin:0;color:#16191A;line-height:1.7}
+    .sheet-info{font-size:12px;line-height:2;color:#646D6E;margin:9px 0 16px}
+    .bottom{position:absolute;right:0;left:0;bottom:25px;background:#FFF;padding:13px 15px 17px;border-top:1px solid #F0F1F1;box-shadow:0 -6px 15px rgba(20,30,30,.03);z-index:3}
+    .bottom-note{color:#777E80;font-size:11px;line-height:1.8;display:flex;align-items:center;justify-content:flex-start;gap:5px;margin:0 2px 9px}
+    .bottom-note.good{color:#3E765A}
+    .action-row{display:flex;gap:10px}
+    .action{min-height:49px;border-radius:30px;flex:1;border:1.5px solid #161718;color:#111718;background:#FFF;font-size:13.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:5px;padding:0 8px;white-space:nowrap}
+    .action.dark{background:#080A0A;border-color:#080A0A;color:#FFF}
+    .action.disabled,.action:disabled{background:#F3F4F4;border-color:#F3F4F4;color:#ADB2B3}
+    .action.wide{width:100%}
+    .action:active:not(:disabled){transform:scale(.992)}
+    .androidnav{position:absolute;bottom:0;left:0;right:0;height:25px;background:#fff;display:flex;align-items:center;justify-content:space-around;direction:ltr;z-index:4}
+    .recents{width:17px;height:16px;border-left:2px solid #949A9B;border-right:2px solid #949A9B;position:relative}
+    .recents:after{content:'';position:absolute;top:0;bottom:0;left:6px;border-left:2px solid #949A9B}
+    .home-nav{width:17px;height:17px;border-radius:5px;border:2px solid #949A9B}
+    .back-nav{width:12px;height:12px;border-left:2px solid #949A9B;border-bottom:2px solid #949A9B;transform:rotate(45deg)}
+    .overlay{position:absolute;inset:0 0 25px;background:rgba(0,0,0,.48);z-index:6;display:flex;align-items:flex-end;animation:fade .15s ease}
+    .sheet{width:100%;max-height:90%;background:#FFF;border-radius:24px 24px 0 0;padding:13px 20px 22px;overflow-y:auto;box-shadow:0 -8px 38px #0002;animation:rise .2s ease}
+    .handle{height:4px;width:39px;background:#D9DDDD;margin:0 auto 20px;border-radius:10px}
+    .sheet-heading{display:flex;align-items:center;gap:8px;justify-content:space-between}
+    .close{background:#F3F4F4;border:0;border-radius:50%;width:31px;height:31px;display:grid;place-items:center;color:#525758}
+    .sheet .intro{font-size:12.2px;color:#535A5C;line-height:2;margin:9px 0 17px}
+    .grid-banks{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+    .bank-grid-item{min-height:94px;border-radius:13px;border:1px solid #E9ECEC;background:#FBFCFC;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:700}
+    .sheet-footnote{margin:16px 0 17px;background:#F5F7F7;border-radius:12px;padding:11px 12px;display:flex;align-items:flex-start;gap:7px;color:#647071;font-size:11px;line-height:1.95}
+    .sheet-actions{display:flex;gap:10px}
+    .sheet-button{height:47px;border-radius:24px;background:#0A0C0D;color:white;border:none;width:100%;font-size:13px;font-weight:700}
+    .sheet-button.quiet{background:#F2F3F3;color:#303637}
+    .small-hint{font-size:11px;color:#888F90;line-height:1.9;margin:6px 0 0}
+    .form-card{padding:18px 16px;margin-bottom:13px}
+    .form-title{display:flex;align-items:center;gap:9px;margin:0 0 11px;font-size:14px;font-weight:700}
+    .form-label{display:block;font-size:12px;font-weight:600;color:#474E50;margin-bottom:9px}
+    .iban-field{height:50px;border:1px solid #D1D6D7;border-radius:11px;display:flex;align-items:center;overflow:hidden;direction:ltr;background:white}
+    .iban-field:focus-within{border-color:#777F81;box-shadow:0 0 0 2px #E9ECEC}
+    .iban-field .prefix{padding:0 12px;color:#868F90;border-right:1px solid #EBEEEE;font:700 15px Arial,sans-serif}
+    .iban-field input{border:none;min-width:0;flex:1;outline:none;background:transparent;direction:ltr;text-align:left;color:#24292A;font:500 14px Arial,sans-serif;padding:0 11px;letter-spacing:.6px}
+    .iban-field input:focus{outline:none}
+    .iban-field input::placeholder{color:#B1B7B8}
+    .form-help{color:#8A9192;font-size:11px;line-height:1.9;margin:8px 0 0}
+    .recognized{padding:14px 13px 13px;margin-top:15px;border-radius:12px;background:#F7F9F9;border:1px solid #E4E8E8}
+    .recognized-top{display:flex;align-items:center;gap:10px}
+    .recognized-top strong{font-size:13px;display:block}
+    .recognized-top span{font-size:10.5px;color:#727C7D}
+    .recognition-state{border-top:1px solid #E7EAEA;margin-top:11px;padding-top:11px;display:flex;align-items:center;gap:6px;font-size:11.3px;line-height:1.9;color:var(--green)}
+    .recognition-state.ach{color:#6F7677}
+    .prototype-details{border-radius:14px;background:#FFF;margin-bottom:14px;padding:13px 15px;border:1px dashed #CFD7D9}
+    .prototype-details summary{font-size:11px;color:#717C7D;cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px}
+    .prototype-details summary::-webkit-details-marker{display:none}
+    .proto-description{color:#8B9596;font-size:10.5px;line-height:1.9;margin:10px 0}
+    .bank-options{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .bank-option{background:#F8F9F9;border:1px solid #E5E9E9;border-radius:9px;min-height:36px;font-size:11px;color:#3D4545}
+    .bank-option.current{border:1.5px solid #25292A;background:#F0F3F3;font-weight:700}
+    .sub-discover{width:100%;border:0;background:transparent;display:flex;align-items:center;gap:8px;padding:2px 1px;color:#50595A;font-size:12px;font-weight:600;justify-content:flex-start}
+    .add-footer-note{font-size:10.5px;color:#9AA1A2;margin:0 2px 10px;line-height:1.8}
+    .review-list{background:#F7F8F8;border-radius:13px;padding:6px 14px;margin:16px 0}
+    .review-item{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid #E8EBEC;font-size:12px}
+    .review-item:last-child{border:none}
+    .review-item .key{color:#7B8384}
+    .review-item strong{font-weight:700}
+    .toast{position:absolute;left:18px;right:18px;top:90px;z-index:15;border-radius:12px;padding:13px 15px;background:#222829;color:#fff;box-shadow:0 5px 21px #0002;text-align:center;font-size:12px;line-height:2;animation:fade .2s ease}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+    @keyframes rise{from{transform:translateY(35px);opacity:.6}to{transform:translateY(0);opacity:1}}
+    @media(max-width:840px){.workspace{display:block;padding:0}.guide{display:none}.phone{width:100%;height:100dvh;min-height:0;max-height:none;border:0;border-radius:0;box-shadow:none}.page{padding:10px 16px 18px}.screen{bottom:25px}}
+    @media(prefers-reduced-motion:reduce){.overlay,.sheet,.toast{animation:none}}
+  </style>
+</head>
+<body>
+<div class="workspace">
+  <aside class="guide">
+    <div class="eyebrow">TAPSI DRIVER · UX PROTOTYPE</div>
+    <h1>تسویه اعتبار،<br />بدون حدس‌زدن.</h1>
+    <p>پیش از ثبت حساب، بانک‌های دارای تسویه لحظه‌ای را بشناسید؛ بعد از ثبت، روش قابل استفاده را همان‌جا کنار حساب ببینید.</p>
+    <div class="guide-grid">
+      <div class="guide-item"><div class="guide-num">01</div><div><strong>کشف بانک‌های پشتیبانی‌شده</strong><span>روی کارت «کدام بانک‌ها» بزنید.</span></div></div>
+      <div class="guide-item"><div class="guide-num">02</div><div><strong>مدیریت سقف سه حساب</strong><span>حساب «بلو» را حذف کنید و جای تازه باز کنید.</span></div></div>
+      <div class="guide-item"><div class="guide-num">03</div><div><strong>افزودن و شناسایی حساب</strong><span>در بخش شبیه‌سازی، بانکی را انتخاب کنید.</span></div></div>
+      <div class="guide-item"><div class="guide-num">04</div><div><strong>انتخاب روش تسویه</strong><span>حساب‌های مختلف را انتخاب و دکمه‌ها را مقایسه کنید.</span></div></div>
+    </div>
+    <div class="guide-foot">نمایش تعاملی برای بررسی طراحی است؛ اطلاعات بانکی، ثبت حساب و برداشت واقعی انجام نمی‌شود. ظاهر بر مبنای صفحه فعلی اپلیکیشن بازسازی شده است، نه توکن‌های تأییدشده کتابخانه فیگما.</div>
+  </aside>
+  <main class="phone" aria-label="نمونه تعاملی تسویه اعتبار راننده">
+    <div id="screen" class="screen"></div>
+    <div id="footer"></div>
+    <div id="modal"></div>
+    <div id="toast"></div>
+    <div class="androidnav" aria-hidden="true"><span class="recents"></span><span class="home-nav"></span><span class="back-nav"></span></div>
+  </main>
+</div>
+<script>
+(()=>{
+  const BANKS=[
+    {id:'mellat',name:'ملت',instant:true,abbr:'ملت'},
+    {id:'melli',name:'ملی ایران',instant:true,abbr:'ملی'},
+    {id:'parsian',name:'پارسیان',instant:true,abbr:'پار'},
+    {id:'saderat',name:'صادرات',instant:true,abbr:'صا'},
+    {id:'resalat',name:'رسالت',instant:true,abbr:'رس'},
+    {id:'saman',name:'سامان',instant:true,abbr:'سم'},
+    {id:'pasargad',name:'پاسارگاد',instant:false,abbr:'پاس'},
+    {id:'blue',name:'بلو',instant:false,abbr:'بلو'}
+  ];
+  const S={screen:'home',modal:null,editing:false,accounts:[{id:1,bank:'melli'},{id:2,bank:'pasargad'},{id:3,bank:'blue'}],selected:2,remove:null,newBank:null,iban:'',review:null};
+  const $=id=>document.getElementById(id);
+  const bank=id=>BANKS.find(b=>b.id===id);
+  const current=()=>S.accounts.find(a=>a.id===S.selected);
+  const owner='میرمحمد اسکندری غرقه';
+  const nf=n=>new Intl.NumberFormat('fa-IR').format(n);
+  const icon=(name,size=20)=>{
+    const paths={
+      arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
+      left:'<path d="m15 18-6-6 6-6"/>',
+      bolt:'<path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z"/>',
+      plus:'<path d="M12 5v14m-7-7h14"/>',
+      edit:'<path d="M12 20h9M15.5 5.5l3 3M4 20l4.5-1 11.2-11.2a2.12 2.12 0 0 0-3-3L5.5 16 4 20Z"/>',
+      check:'<path d="m4.5 12 5 5L20 6.5"/>',
+      clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+      close:'<path d="M18 6 6 18M6 6l12 12"/>',
+      info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/>',
+      trash:'<path d="M3 6h18m-2 0-.8 14H5.8L5 6m3 0V4h8v2M10 10v7m4-7v7"/>',
+      bank:'<path d="m3 10 9-6 9 6M4 10h16M6 10v9m4-9v9m4-9v9m4-9v9M3 20h18"/>',
+      shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/>',
+      chevron:'<path d="m9 18 6-6-6-6"/>'
+    };
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name]||''}</svg>`;
+  };
+  const badge=b=>`<span class="bank-symbol ${b.id}" aria-hidden="true">${b.abbr}</span>`;
+  const status=b=>b.instant?`<span class="capability instant">${icon('bolt',12)} تسویه لحظه‌ای</span>`:`<span class="capability ach">${icon('clock',12)} فقط پایا</span>`;
+  const shell=(title,back=false)=>`<div class="statusbar"><span>15:06</span><span class="status-icons">▮▮　◕ ᯤ　60% ▰</span></div><div class="navbar"><button class="icon-btn" data-action="${back?'back':'noop'}" aria-label="بازگشت">${icon('arrow',25)}</button><h2>${title}</h2></div>`;
+  const discoverCard=(tiny=false)=>tiny?`<button class="sub-discover" data-action="discover">${icon('bolt',16)} کدام بانک‌ها تسویه لحظه‌ای دارند؟ ${icon('left',16)}</button>`:`<button class="discover" data-action="discover"><span class="discover-icon">${icon('bolt',23)}</span><span class="discover-copy"><strong>کدام بانک‌ها تسویه لحظه‌ای دارند؟</strong><span>قبل از افزودن حساب، بانک‌های پشتیبانی‌شده را ببینید</span></span><span class="discover-arrow">${icon('left',18)}</span></button>`;
+  const bottomButtons=(a)=>{
+    if(!a)return `<div class="bottom"><button class="action disabled wide" disabled>ابتدا یک حساب انتخاب کنید</button></div>`;
+    const b=bank(a.bank);
+    return `<div class="bottom"><div class="bottom-note ${b.instant?'good':''}">${b.instant?icon('bolt',14):icon('clock',14)}${b.instant?'حساب انتخاب‌شده، تسویه لحظه‌ای را پشتیبانی می‌کند.':'حساب انتخاب‌شده فقط از طریق پایا تسویه می‌شود.'}</div><div class="action-row"><button class="action ${b.instant?'dark':'disabled'}" data-action="instant" ${!b.instant?'disabled':''}>${b.instant?icon('bolt',17):''}تسویه لحظه‌ای</button><button class="action ${b.instant?'':'dark'}" data-action="ach">انتقال پایا</button></div></div>`;
+  };
+  function home(){
+    const n=S.accounts.length;
+    $('screen').innerHTML=shell('تسویه اعتبار')+`<div class="page" style="padding-bottom:146px"><section class="card balance"><div class="eyetext">مبلغ قابل تسویه</div><div class="balance-value">۴۲,۸۶۳ <small>تومان</small></div><div class="balance-note">مبلغ ۵۰ هزار تومان در حساب شما باقی می‌ماند.</div></section>
+    ${discoverCard()}
+    <section class="card accounts"><div class="accounts-header"><strong>حساب‌های بانکی من</strong><div class="accounts-tools"><span class="account-counter">${nf(n)} از ۳</span><button class="manage-action" data-action="manage">${icon(S.editing?'check':'edit',15)} ${S.editing?'پایان':'مدیریت'}</button></div></div>
+    <div class="account-list">${S.accounts.map(a=>{let b=bank(a.bank),active=a.id===S.selected;return `<button type="button" class="account-row" data-action="${S.editing?'remove':'select'}" data-id="${a.id}" aria-pressed="${active}">${badge(b)}<span class="account-copy"><span class="owner">${owner}</span><span class="bank-name">بانک ${b.name}</span>${status(b)}</span>${S.editing?`<span class="trash" aria-label="حذف حساب">${icon('trash',17)}</span>`:`<span class="circle ${active?'checked':''}">${active?icon('check',17):''}</span>`}</button>`}).join('')||'<div class="empty">حساب بانکی ثبت‌شده‌ای ندارید.</div>'}</div>
+    <div class="add-wrap"><button class="add-btn" data-action="add" ${n>=3?'disabled':''}>${icon('plus',18)} افزودن حساب بانکی جدید</button>${n>=3?'<p class="account-limit">حداکثر ۳ حساب؛ برای افزودن حساب جدید از «مدیریت» استفاده کنید.</p>':''}</div></section></div>`;
+    $('footer').innerHTML=bottomButtons(current());
+  }
+  function add(){
+    const b=bank(S.newBank);
+    $('screen').innerHTML=shell('افزودن حساب بانکی',true)+`<div class="page" style="padding-bottom:138px"><div class="card form-card"><div class="form-title">${icon('bank',19)} اطلاعات حساب بانکی</div><label for="iban" class="form-label">شماره شبا</label><div class="iban-field"><span class="prefix">IR</span><input id="iban" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="0000 0000 0000 0000 0000 0000" maxlength="30" value="${S.iban}" /></div><p class="form-help">شماره شبا باید ۲۶ کاراکتر و به نام خودتان باشد.</p>
+    ${b?`<div class="recognized"><div class="recognized-top">${badge(b)}<div><strong>بانک ${b.name}</strong><span>شناسایی‌شده از شماره شبا (شبیه‌سازی)</span></div></div><div class="recognition-state ${b.instant?'':'ach'}">${icon(b.instant?'bolt':'clock',16)}${b.instant?'این حساب قابلیت تسویه لحظه‌ای دارد.':'این حساب فقط انتقال پایا را پشتیبانی می‌کند.'}</div></div>`:''}</div>
+    <div class="card form-card"><div class="form-title">${icon('bolt',18)} تسویه لحظه‌ای</div><p class="sheet-info" style="margin:0 0 8px">برای استفاده از تسویه لحظه‌ای، باید شماره شبای یکی از بانک‌های پشتیبانی‌شده را ثبت کنید.</p>${discoverCard(true)}</div>
+    <details class="prototype-details" id="demo-helper" ${S.newBank?'open':''}><summary>${icon('info',15)} شبیه‌سازی استعلام شماره شبا (مخصوص نمونه اولیه)</summary><p class="proto-description">در اپ واقعی، بانک از شماره شبا شناسایی می‌شود. برای تجربه این نمونه، یکی از بانک‌ها را انتخاب کنید تا شبا و نتیجه استعلام نمونه تولید شود.</p><div class="bank-options">${BANKS.map(x=>`<button class="bank-option ${x.id===S.newBank?'current':''}" data-action="demo" data-bank="${x.id}">${x.name}</button>`).join('')}</div></details>
+    </div>`;
+    $('footer').innerHTML=`<div class="bottom"><div class="add-footer-note">${b?'بانک حساب شما شناسایی شده است.':'پس از شناسایی شماره شبا می‌توانید حساب را ثبت کنید.'}</div><button class="action ${b?'dark':'disabled'} wide" data-action="save" ${!b?'disabled':''}>ثبت حساب بانکی</button></div>`;
+  }
+  function render(){S.screen==='home'?home():add();renderModal()}
+  function renderModal(){
+    if(!S.modal){$('modal').innerHTML='';return}
+    let body='';
+    if(S.modal==='discover'){
+      body=`<div class="sheet-heading"><h3 class="sheet-title">بانک‌های دارای تسویه لحظه‌ای</h3><button class="close" data-action="close" aria-label="بستن">${icon('close',18)}</button></div><p class="intro">اگر در یکی از بانک‌های زیر حساب دارید، می‌توانید با ثبت شماره شبای آن، از تسویه لحظه‌ای استفاده کنید.</p><div class="grid-banks">${BANKS.filter(x=>x.instant).map(x=>`<div class="bank-grid-item">${badge(x)}<span>بانک ${x.name}</span></div>`).join('')}</div><div class="sheet-footnote">${icon('info',18)}<div>حساب‌های «بلو» مشمول تسویه لحظه‌ای بانک سامان نیستند. این قابلیت ممکن است هنگام اختلال سرویس بانکی به طور موقت در دسترس نباشد.</div></div><button class="sheet-button" data-action="discovery-next">${S.accounts.length>=3?'مدیریت حساب‌ها برای افزودن حساب جدید':'افزودن حساب بانکی'}</button><button class="sheet-button quiet" style="margin-top:9px" data-action="close">بستن</button>`;
+    }else if(S.modal==='remove'){
+      const a=S.accounts.find(x=>x.id===S.remove),b=bank(a?.bank);
+      body=`<div class="sheet-heading"><h3 class="sheet-title">حذف حساب بانکی</h3><button class="close" data-action="close">${icon('close',18)}</button></div><p class="intro">آیا می‌خواهید حساب <strong>بانک ${b?.name||''}</strong> را از حساب‌های ثبت‌شده حذف کنید؟ پس از حذف، می‌توانید حساب دیگری اضافه کنید.</p><div class="sheet-actions"><button class="sheet-button" data-action="remove-confirm">حذف حساب</button><button class="sheet-button quiet" data-action="close">انصراف</button></div>`;
+    }else if(S.modal==='review'){
+      const a=current(),b=bank(a?.bank),instant=S.review==='instant';
+      body=`<div class="sheet-heading"><h3 class="sheet-title">بررسی اطلاعات تسویه</h3><button class="close" data-action="close">${icon('close',18)}</button></div><p class="intro">لطفاً پیش از ادامه، اطلاعات تسویه را بررسی کنید.</p><div class="review-list"><div class="review-item"><span class="key">مبلغ</span><strong>۴۲,۸۶۳ تومان</strong></div><div class="review-item"><span class="key">حساب مقصد</span><strong>بانک ${b?.name}</strong></div><div class="review-item"><span class="key">روش انتقال</span><strong>${instant?'تسویه لحظه‌ای':'انتقال پایا'}</strong></div></div><button class="sheet-button" data-action="review-confirm">تأیید (شبیه‌سازی)</button><p class="small-hint">در این نمونه هیچ درخواست مالی ثبت یا ارسال نمی‌شود.</p>`;
+    }
+    $('modal').innerHTML=`<div class="overlay" data-action="outside"><section class="sheet" role="dialog" aria-modal="true" aria-label="${S.modal==='discover'?'بانک‌های تسویه لحظه‌ای':'عملیات تسویه'}"><div class="handle"></div>${body}</section></div>`;
+  }
+  let toastTimeout;
+  function toast(msg){$('toast').innerHTML=`<div class="toast" role="status">${msg}</div>`;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').innerHTML='',2900)}
+  function back(){if(S.modal){S.modal=null;renderModal()}else if(S.screen==='add'){S.screen='home';render()}else toast('شما در صفحه نخست نمونه اولیه هستید.')}
+  function handle(e){
+    const btn=e.target.closest('[data-action]');if(!btn)return;
+    const act=btn.dataset.action;
+    if(act==='outside'&&btn!==e.target)return;
+    if(act==='discover'){S.modal='discover';renderModal()}
+    else if(act==='close'||act==='outside'){S.modal=null;renderModal()}
+    else if(act==='back')back();
+    else if(act==='noop')toast('صفحه نخست نمونه اولیه');
+    else if(act==='manage'){S.editing=!S.editing;render()}
+    else if(act==='select'){S.selected=Number(btn.dataset.id);render()}
+    else if(act==='remove'){S.remove=Number(btn.dataset.id);S.modal='remove';renderModal()}
+    else if(act==='remove-confirm'){
+      S.accounts=S.accounts.filter(a=>a.id!==S.remove);if(!S.accounts.some(a=>a.id===S.selected))S.selected=S.accounts[0]?.id??null;
+      S.remove=null;S.modal=null;S.editing=false;render();toast('حساب حذف شد. اکنون می‌توانید حساب دیگری اضافه کنید.');
+    }
+    else if(act==='add'&&S.accounts.length<3){S.screen='add';S.newBank=null;S.iban='';render()}
+    else if(act==='discovery-next'){
+      S.modal=null;
+      if(S.accounts.length>=3){S.screen='home';S.editing=true;render();toast('برای افزودن حساب جدید، ابتدا یک حساب را حذف کنید.');}
+      else {S.screen='add';S.newBank=null;S.iban='';render()}
+    }
+    else if(act==='demo'){
+      S.newBank=btn.dataset.bank;
+      const idx=BANKS.findIndex(b=>b.id===S.newBank);
+      S.iban=String(10+idx).padEnd(24,'0');
+      render();
+      const input=$('iban');if(input){input.value=S.iban}
+    }
+    else if(act==='save'&&S.newBank&&S.accounts.length<3){
+      const id=Math.max(0,...S.accounts.map(x=>x.id))+1;
+      S.accounts.push({id,bank:S.newBank});S.selected=id;S.screen='home';S.editing=false;render();toast('حساب بانکی نمونه ثبت و انتخاب شد.');
+    }
+    else if((act==='instant'||act==='ach')&&!btn.disabled){S.review=act;S.modal='review';renderModal()}
+    else if(act==='review-confirm'){S.modal=null;renderModal();toast('عملیات صرفاً شبیه‌سازی شد؛ هیچ وجهی منتقل نشد.')}
+  }
+  document.addEventListener('click',handle);
+  document.addEventListener('input',e=>{if(e.target.id==='iban'){S.iban=e.target.value}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')back()});
+  render();
+})();
+</script>
+</body>
+</html>
