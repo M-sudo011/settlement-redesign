@@ -165,13 +165,32 @@
     @media(prefers-reduced-motion:reduce){.overlay,.sheet,.toast{animation:none}}
 
 
-    .iban-status-help{font-size:11.5px;color:#667274;background:#F5F7F7;padding:11px 12px;border-radius:10px;line-height:1.9;margin:13px 0 0}
-    .iban-alert{display:flex;align-items:center;gap:8px;margin-top:13px;padding:12px;border-radius:10px;background:#FFF4F1;border:1px solid #F6D8CD;color:#963E32;font-size:11.3px;line-height:2}
-    .inquiry-wait{font-size:11px;color:#727D7F;margin:10px 0 0;line-height:1.8}
-    .inquiry-owner{margin-top:13px;border-top:1px solid #E3E8E8;padding-top:11px;display:flex;flex-direction:column;gap:3px}
-    .inquiry-owner>span{font-size:11px;color:#798183}
-    .inquiry-owner>strong{font-size:14px;color:#1B2122}
-    .inquiry-owner>small{font-size:10px;color:#3E765A;display:flex;align-items:center;gap:4px}
+    .add-page-current{padding:8px 16px 28px}
+    .add-header{padding:10px 2px 14px;text-align:center}
+    .add-header h3{margin:0;font-size:14px;font-weight:700;color:#1D2122}
+    .current-entry{margin-top:6px;background:#EFF1F1;border-radius:16px;padding:16px 14px 18px}
+    .current-entry .iban-field{height:56px;border:none;background:#fff;border-radius:12px}
+    .current-entry .iban-field input{padding:0 16px;font-size:22px;letter-spacing:.8px;color:#677072}
+    .current-entry .iban-field .prefix{display:none}
+    .current-primary{margin-top:14px;width:100%;height:49px;border:0;border-radius:28px;background:#F4F5F5;color:#B8BDBE;font-size:15px;font-weight:700}
+    .current-primary.enabled{background:#080A0A;color:#fff}
+    .current-primary:disabled{background:#F4F5F5;color:#B8BDBE}
+    .support-card{margin-top:14px;padding:14px 14px 13px;border-radius:16px;background:#fff;border:1px solid #E8ECEC}
+    .support-head{display:flex;align-items:center;gap:10px}
+    .support-copy{display:flex;flex-direction:column;gap:3px}
+    .support-copy strong{font-size:13px;color:#1D2223}
+    .support-copy span{font-size:11px;color:#778082}
+    .support-meta{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .support-state{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+    .support-state.instant{color:#2F6D53}
+    .support-state.ach{color:#626B6C}
+    .support-owner{font-size:12px;color:#202526;font-weight:600}
+    .subtle-link{margin-top:14px;width:100%;border:1px solid #E6EAEA;background:#fff;border-radius:14px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;color:#262B2C}
+    .subtle-link small{display:block;font-size:10.5px;font-weight:500;color:#798183;margin-top:3px}
+    .helper-sheet{margin-top:12px}
+    .helper-sheet summary{font-size:10.8px;color:#7C8687;cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px}
+    .helper-sheet summary::-webkit-details-marker{display:none}
+    .helper-sheet .bank-options{margin-top:10px}
   </style>
 </head>
 <body>
@@ -183,10 +202,10 @@
     <div class="guide-grid">
       <div class="guide-item"><div class="guide-num">01</div><div><strong>کشف بانک‌های پشتیبانی‌شده</strong><span>روی کارت «کدام بانک‌ها» بزنید.</span></div></div>
       <div class="guide-item"><div class="guide-num">02</div><div><strong>مدیریت سقف سه حساب</strong><span>حساب «بلو» را حذف کنید و جای تازه باز کنید.</span></div></div>
-      <div class="guide-item"><div class="guide-num">03</div><div><strong>افزودن و شناسایی حساب</strong><span>شماره شبا را وارد کنید، نتیجه بانک را ببینید و استعلام بگیرید.</span></div></div>
+      <div class="guide-item"><div class="guide-num">03</div><div><strong>افزودن و شناسایی حساب</strong><span>شماره را وارد کنید و در صورت شناسایی، نتیجه را ببینید.</span></div></div>
       <div class="guide-item"><div class="guide-num">04</div><div><strong>انتخاب روش تسویه</strong><span>حساب‌های مختلف را انتخاب و دکمه‌ها را مقایسه کنید.</span></div></div>
     </div>
-    <div class="guide-foot">نمایش تعاملی برای بررسی طراحی است؛ استعلام نام صاحب حساب، ثبت حساب و برداشت واقعی انجام نمی‌شود. ظاهر بر مبنای صفحه فعلی اپلیکیشن بازسازی شده است، نه توکن‌های تأییدشده کتابخانه فیگما.</div>
+    <div class="guide-foot">نمایش تعاملی برای بررسی طراحی است؛ اطلاعات بانکی، ثبت حساب و برداشت واقعی انجام نمی‌شود. ظاهر بر مبنای صفحه فعلی اپلیکیشن بازسازی شده است، نه توکن‌های تأییدشده کتابخانه فیگما.</div>
   </aside>
   <main class="phone" aria-label="نمونه تعاملی تسویه اعتبار راننده">
     <div id="screen" class="screen"></div>
@@ -198,11 +217,9 @@
 </div>
 <script>
 (()=>{
-  // Bank codes and the WEPOD/BELU exceptions follow the supplied SQL CASE expression.
-  // "instant" is based on the six banks named on the original Tapsi settlement screen.
   const BANKS=[
     {id:'mellat',code:'012',name:'ملت',instant:true,abbr:'ملت',sampleOwner:'مریم احمدی'},
-    {id:'melli',code:'017',name:'ملی ایران',instant:true,abbr:'ملی',sampleOwner:'میرمحمد اسکندری غرفه'},
+    {id:'melli',code:'017',name:'ملی ایران',instant:true,abbr:'ملی',sampleOwner:'میرمحمد اسکندری غرقه'},
     {id:'parsian',code:'054',name:'پارسیان',instant:true,abbr:'پار',sampleOwner:'سارا رضایی'},
     {id:'saderat',code:'019',name:'صادرات',instant:true,abbr:'صا',sampleOwner:'علیرضا نادری'},
     {id:'resalat',code:'070',name:'رسالت',instant:true,abbr:'رس',sampleOwner:'نگار محمدی'},
@@ -212,65 +229,25 @@
     {id:'blue',code:'056',name:'بلو',instant:false,abbr:'بلو',sampleOwner:'کیانا صادقی'},
     {id:'keshavarzi',code:'016',name:'کشاورزی',instant:false,abbr:'کشا',sampleOwner:'علی اکبری'},
     {id:'maskan',code:'014',name:'مسکن',instant:false,abbr:'مس',sampleOwner:'نرگس حسینی'},
-    {id:'mehr',code:'060',name:'قرض‌الحسنه مهر ایران',instant:false,abbr:'مهر',sampleOwner:'محمد پارسا'},
+    {id:'mehr',code:'060',name:'مهر ایران',instant:false,abbr:'مهر',sampleOwner:'محمد پارسا'},
     {id:'refah',code:'013',name:'رفاه کارگران',instant:false,abbr:'رف',sampleOwner:'زهرا توکلی'},
     {id:'sepah',code:'015',name:'سپه',instant:false,abbr:'سپه',sampleOwner:'فرهاد مرادی'},
     {id:'shahr',code:'061',name:'شهر',instant:false,abbr:'شهر',sampleOwner:'پریسا احمدی'},
     {id:'tejarat',code:'018',name:'تجارت',instant:false,abbr:'تجا',sampleOwner:'آرش شریفی'}
   ];
   const S={screen:'home',modal:null,editing:false,accounts:[{id:1,bank:'melli'},{id:2,bank:'pasargad'},{id:3,bank:'blue'}],selected:2,remove:null,newBank:null,iban:'',inquiry:null,inquiryPending:false,review:null};
-
   const $=id=>document.getElementById(id);
   const bank=id=>BANKS.find(b=>b.id===id);
   const current=()=>S.accounts.find(a=>a.id===S.selected);
   const owner='میرمحمد اسکندری غرقه';
   const nf=n=>new Intl.NumberFormat('fa-IR').format(n);
-  // Accept Persian and Arabic digits as well as pasted "IR..." or just the 24 digits.
   const latinDigits=s=>String(s||'').replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c))).replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c)));
   const ibanDigits=s=>latinDigits(s).toUpperCase().replace(/[\s-]/g,'').replace(/^IR/,'').replace(/\D/g,'').slice(0,24);
   const ibanFull=()=>'IR'+S.iban;
-  const ibanRemainder=digits=>{
-    let remainder=0;
-    for(const digit of digits) remainder=(remainder*10+Number(digit))%97;
-    return remainder;
-  };
+  const ibanRemainder=digits=>{let remainder=0;for(const digit of digits) remainder=(remainder*10+Number(digit))%97;return remainder;};
   const validIban=full=>/^IR\d{24}$/.test(full)&&ibanRemainder(full.slice(4)+'1827'+full.slice(2,4))===1;
-  const bankFromIban=full=>{
-    if(!/^IR\d{5}/.test(full))return null;
-    // Specific account prefixes must take precedence over the general 057/056 bank codes.
-    if(/^IR\d{2}05700777\d{14}$/.test(full))return bank('wepod');
-    if(/^IR\d{2}0560611828\d{12}$/.test(full))return bank('blue');
-    const code=full.substring(4,7); // SQL substring(iban, 6, 2) is the LAST TWO digits of this code
-    return BANKS.find(b=>b.code===code&&b.id!=='wepod'&&b.id!=='blue')||null;
-  };
-  const sampleIban=b=>{
-    const national=b.id==='wepod'?'05700777'+'12345678901234':b.id==='blue'?'0560611828'+'123456789012':b.code+'0012345678901234567';
-    const check=String(98-ibanRemainder(national+'182700')).padStart(2,'0');
-    return 'IR'+check+national;
-  };
-  const ibanFeedback=()=>{
-    if(!S.iban) return '<p class="iban-status-help">شماره شبا را وارد کنید؛ بانک و امکان تسویه لحظه‌ای همین‌جا مشخص می‌شود.</p>';
-    const full=ibanFull(),b=bankFromIban(full),special=b&&(b.code==='056'||b.code==='057');
-    if(S.iban.length<24){
-      const hint=S.iban.length<5?'برای شناسایی بانک، شماره شبا را ادامه دهید.':special?'برای تشخیص دقیق بانک سامان از بلو یا پاسارگاد از ویپاد، شماره شبا را کامل کنید.':b?'بانک '+b.name+' شناسایی شد؛ برای بررسی اعتبار شبا، آن را کامل کنید.':'شماره شبا را کامل کنید تا بانک بررسی شود.';
-      return '<p class="iban-status-help">'+hint+' <span dir="ltr">('+nf(S.iban.length)+'/۲۴)</span></p>';
-    }
-    if(!validIban(full))return '<div class="iban-alert">'+icon('info',17)+'شماره شبا معتبر نیست. رقم‌های کنترلی را بررسی کنید.</div>';
-    if(!b)return '<div class="iban-alert">'+icon('info',17)+'بانک مربوط به این شبا در فهرست شبیه‌سازی موجود نیست.</div>';
-    const completed=S.inquiry?.iban===full;
-    return '<div class="recognized"><div class="recognized-top">'+badge(b)+'<div><strong>بانک '+b.name+'</strong><span>شناسایی خودکار از شماره شبا</span></div></div>'+
-      '<div class="recognition-state '+(b.instant?'':'ach')+'">'+icon(b.instant?'bolt':'clock',16)+(b.instant?'تسویه لحظه‌ای در تپسی پشتیبانی می‌شود.':'این شماره شبا فقط برای تسویه پایا قابل استفاده است.')+'</div>'+
-      (completed?'<div class="inquiry-owner"><span>نام صاحب حساب (استعلام آزمایشی)</span><strong>'+S.inquiry.owner+'</strong><small>'+icon('check',13)+' استعلام نمونه با موفقیت انجام شد</small></div>':'<p class="inquiry-wait">برای مشاهده نام نمونه صاحب حساب، «استعلام شماره شبا» را بزنید.</p>')+
-      '</div>';
-  };
-  const addFooter=()=>{
-    const full=ibanFull(),b=bankFromIban(full),valid=validIban(full)&&!!b;
-    const completed=S.inquiry?.iban===full;
-    const label=S.inquiryPending?'در حال استعلام شبا…':completed?'ثبت حساب بانکی':'استعلام شماره شبا';
-    return '<div class="bottom"><div class="add-footer-note">نتیجه استعلام و نام صاحب حساب در این نمونه آزمایشی است؛ اطلاعات واقعی دریافت نمی‌شود.</div>'+
-      '<button class="action '+(valid&&!S.inquiryPending?'dark':'disabled')+' wide" data-action="'+(completed?'save':'inquire')+'" '+(!valid||S.inquiryPending?'disabled':'')+'>'+label+'</button></div>';
-  };
-
+  const bankFromIban=full=>{if(!/^IR\d{5}/.test(full)) return null; if(/^IR\d{2}05700777\d{14}$/.test(full)) return bank('wepod'); if(/^IR\d{2}0560611828\d{12}$/.test(full)) return bank('blue'); const code=full.substring(4,7); return BANKS.find(b=>b.code===code && b.id!=='wepod' && b.id!=='blue') || null;};
+  const sampleIban=b=>{const national=b.id==='wepod'?'05700777'+'12345678901234':b.id==='blue'?'0560611828'+'123456789012':b.code+'0012345678901234567'; const check=String(98-ibanRemainder(national+'182700')).padStart(2,'0'); return 'IR'+check+national;};
   const icon=(name,size=20)=>{
     const paths={
       arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
@@ -308,22 +285,13 @@
     $('footer').innerHTML=bottomButtons(current());
   }
   function add(){
-    $('screen').innerHTML=shell('افزودن حساب بانکی',true)+
-      '<div class="page" style="padding-bottom:138px">'+
-      '<div class="card form-card"><div class="form-title">'+icon('bank',19)+' اطلاعات حساب بانکی</div>'+
-      '<label for="iban" class="form-label">شماره شبا</label>'+
-      '<div class="iban-field"><span class="prefix">IR</span><input id="iban" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="00 000 0000 0000 0000 0000 000" maxlength="40" value="'+S.iban+'" aria-describedby="iban-live" /></div>'+
-      '<p class="form-help">شماره شبا ۲۶ کاراکتر است و با IR شروع می‌شود. ۲۴ رقم بعد از IR را بنویسید یا شماره کامل را جای‌گذاری کنید.</p>'+
-      '<div id="iban-live" aria-live="polite">'+ibanFeedback()+'</div></div>'+
-      '<div class="card form-card"><div class="form-title">'+icon('bolt',18)+' تسویه لحظه‌ای</div>'+
-      '<p class="sheet-info" style="margin:0 0 8px">بانک‌های واجد شرایط را قبل از ثبت حساب ببینید.</p>'+discoverCard(true)+'</div>'+
-      '<details class="prototype-details" id="demo-helper"><summary>'+icon('info',15)+' شماره شبای آزمایشی برای تست (انتخاب بانک)</summary>'+
-      '<p class="proto-description">برای امتحان همه حالت‌ها، یکی از بانک‌های زیر را لمس کنید تا یک شبای نمونه با رقم کنترل معتبر درج شود. برای ویپاد و بلو از پیش‌شماره‌های ویژه استفاده شده است.</p>'+
-      '<div class="bank-options">'+BANKS.map(x=>'<button type="button" class="bank-option '+(x.id===S.newBank?'current':'')+'" data-action="demo" data-bank="'+x.id+'">'+x.name+'</button>').join('')+'</div></details>'+
-      '</div>';
-    $('footer').innerHTML=addFooter();
+    const b=bankFromIban(ibanFull());
+    const recognized=!!(b && validIban(ibanFull()) && S.inquiry && S.inquiry.iban===ibanFull());
+    const canInquire=!!(b && validIban(ibanFull()) && !S.inquiryPending && !recognized);
+    const canSave=recognized && S.accounts.length<3;
+    $('screen').innerHTML=shell('افزودن شماره شبا',true)+`<div class="page add-page-current"><div class="add-header"><h3>شماره شبا یا شماره‌ی اوزون کارت</h3></div><div class="current-entry"><div class="iban-field"><input id="iban" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="0000 0000 0000 0000" maxlength="40" value="${S.iban}" /></div><button class="current-primary ${canInquire||canSave?'enabled':''}" data-action="${recognized?'save':'inquire'}" ${canInquire||canSave?'':'disabled'}>${recognized?'ثبت حساب بانکی':(S.inquiryPending?'در حال دریافت اطلاعات حساب...':'دریافت اطلاعات حساب')}</button></div>${recognized?`<div class="support-card"><div class="support-head">${badge(b)}<div class="support-copy"><strong>بانک ${b.name}</strong><span>${S.inquiry.owner}</span></div></div><div class="support-meta"><span class="support-state ${b.instant?'instant':'ach'}">${icon(b.instant?'bolt':'clock',15)} ${b.instant?'پشتیبانی از تسویه لحظه‌ای':'فقط انتقال پایا'}</span><span class="support-owner">${S.inquiry.owner}</span></div></div>`:''}<button class="subtle-link" data-action="discover"><span><span>بانک‌های دارای تسویه لحظه‌ای</span><small>ببینید کدام بانک‌ها این قابلیت را دارند</small></span>${icon('left',18)}</button><details class="prototype-details helper-sheet" id="demo-helper" ${S.newBank?'open':''}><summary>${icon('info',15)} شبیه‌سازی نمونه اولیه</summary><div class="bank-options">${BANKS.map(x=>`<button class="bank-option ${x.id===S.newBank?'current':''}" data-action="demo" data-bank="${x.id}">${x.name}</button>`).join('')}</div></details></div>`;
+    $('footer').innerHTML='';
   }
-
   function render(){S.screen==='home'?home():add();renderModal()}
   function renderModal(){
     if(!S.modal){$('modal').innerHTML='';return}
@@ -364,49 +332,42 @@
       else {S.screen='add';S.newBank=null;S.iban='';S.inquiry=null;S.inquiryPending=false;render()}
     }
     else if(act==='demo'){
-      const b=bank(btn.dataset.bank);
-      if(!b)return;
-      S.newBank=b.id;S.iban=sampleIban(b).slice(2);
-      S.inquiry=null;S.inquiryPending=false;
-      render();
-      const details=$('demo-helper');if(details)details.open=true;
+      const b=bank(btn.dataset.bank); if(!b) return;
+      S.newBank=b.id; S.iban=sampleIban(b).slice(2); S.inquiry=null; S.inquiryPending=false; render();
     }
-    else if(act==='inquire'&&!S.inquiryPending){
-      const full=ibanFull(),b=bankFromIban(full);
-      if(!validIban(full)||!b)return;
-      S.inquiry=null;S.inquiryPending=true;$('footer').innerHTML=addFooter();
-      const live=$('iban-live');if(live)live.innerHTML=ibanFeedback();
-      setTimeout(()=>{
-        if(S.screen!=='add'||ibanFull()!==full)return;
-        S.inquiryPending=false;
-        S.inquiry={iban:full,owner:b.sampleOwner};
-        const display=$('iban-live');if(display)display.innerHTML=ibanFeedback();
-        $('footer').innerHTML=addFooter();
-      },650);
+    else if(act==='inquire'&&!btn.disabled){
+      const full=ibanFull(), b=bankFromIban(full);
+      if(!b || !validIban(full)) return;
+      S.inquiryPending=true; render();
+      setTimeout(()=>{ if(S.screen!=='add' || ibanFull()!==full) return; S.inquiryPending=false; S.inquiry={iban:full,owner:b.sampleOwner}; S.newBank=b.id; render(); }, 500);
     }
-    else if(act==='save'&&S.accounts.length<3){
-      const full=ibanFull(),b=bankFromIban(full);
-      if(!b||!validIban(full)||S.inquiry?.iban!==full)return;
+    else if(act==='save'&&!btn.disabled){
+      const b=bankFromIban(ibanFull()); if(!b) return;
       const id=Math.max(0,...S.accounts.map(x=>x.id))+1;
-      S.accounts.push({id,bank:b.id,iban:full,owner:S.inquiry.owner});
-      S.selected=id;S.screen='home';S.editing=false;render();
-      toast('حساب '+b.name+' با نام نمونه صاحب حساب ثبت و انتخاب شد.');
+      S.accounts.push({id,bank:b.id,owner:S.inquiry?.owner||b.sampleOwner}); S.selected=id; S.screen='home'; S.editing=false; render(); toast('حساب بانکی نمونه ثبت و انتخاب شد.');
     }
-
     else if((act==='instant'||act==='ach')&&!btn.disabled){S.review=act;S.modal='review';renderModal()}
     else if(act==='review-confirm'){S.modal=null;renderModal();toast('عملیات صرفاً شبیه‌سازی شد؛ هیچ وجهی منتقل نشد.')}
   }
   document.addEventListener('click',handle);
   document.addEventListener('input',e=>{
     if(e.target.id!=='iban')return;
-    const digits=ibanDigits(e.target.value);
-    S.iban=digits;e.target.value=digits;
+    S.iban=ibanDigits(e.target.value);
+    e.target.value=S.iban;
     S.newBank=bankFromIban(ibanFull())?.id||null;
     S.inquiry=null;S.inquiryPending=false;
-    const live=$('iban-live');if(live)live.innerHTML=ibanFeedback();
-    $('footer').innerHTML=addFooter();
+    // Update the inquiry action without re-rendering the entire form and losing input focus.
+    const action=document.querySelector('.current-primary');
+    if(action){
+      const enabled=!!S.newBank&&validIban(ibanFull());
+      action.disabled=!enabled;
+      action.classList.toggle('enabled',enabled);
+      action.dataset.action='inquire';
+      action.textContent='دریافت اطلاعات حساب';
+    }
+    const result=document.querySelector('.support-card');
+    if(result)result.remove();
   });
-
   document.addEventListener('keydown',e=>{if(e.key==='Escape')back()});
   render();
 })();
