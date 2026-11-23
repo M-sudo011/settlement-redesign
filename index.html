@@ -191,6 +191,34 @@
     .helper-sheet summary{font-size:10.8px;color:#7C8687;cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px}
     .helper-sheet summary::-webkit-details-marker{display:none}
     .helper-sheet .bank-options{margin-top:10px}
+
+    /* Inquiry and confirmation, retaining the current Tapsi Driver layout. */
+    .add-page-current{padding:28px 16px 28px}
+    .add-header{text-align:right;padding:10px 0 13px}
+    .current-entry{background:transparent;padding:0;margin:0}
+    .current-entry .iban-field{background:#FFF;border-radius:6px;height:55px}
+    .current-entry .iban-field input{font-size:15px;letter-spacing:.2px}
+    .current-primary{margin-top:30px;height:50px}
+    .current-primary.enabled{background:#286DF1;color:#FFF}
+    .current-primary:disabled{background:#F8F9F9;color:#ABB1B2}
+    .subtle-link{margin-top:23px}
+    .inquiry-spinner{width:16px;height:16px;display:inline-block;vertical-align:middle;border-radius:100%;border:2px solid #FFFFFF80;border-top-color:#FFF;animation:inquiryspin .7s linear infinite;margin-left:8px}
+    @keyframes inquiryspin{to{transform:rotate(360deg)}}
+    .confirm-page{padding:23px 16px 38px}
+    .confirm-label{font-size:13px;font-weight:600;color:#676F71;margin:0 0 11px}
+    .confirm-iban{direction:ltr;text-align:left;background:#FFF;color:#858B8D;border-radius:6px;padding:16px 15px;min-height:53px;letter-spacing:.3px;font:500 13px Arial,sans-serif;overflow-wrap:anywhere}
+    .confirm-details{background:#FFF;margin-top:19px;border-radius:14px;padding:6px 16px 12px}
+    .confirm-row{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:48px;font-size:12px;border-bottom:1px solid #ECEEEE}
+    .confirm-row .field-label{color:#737A7C}
+    .confirm-row strong{font-size:13px;color:#1D2324;font-weight:700}
+    .confirm-row .bank-result{display:flex;align-items:center;gap:8px}
+    .confirm-row .bank-symbol{width:28px;height:28px;border-radius:8px;font-size:9px}
+    .confirm-row.status-row{border-bottom:0}
+    .confirm-row.status-row .capability{margin:0}
+    .confirm-note{font-size:11px;line-height:1.9;margin:16px 2px 24px;color:#697274}
+    .confirm-primary{width:100%;min-height:50px;border:0;border-radius:27px;background:#286DF1;color:#FFF;font-size:15px;font-weight:700}
+    .confirm-edit{display:block;width:100%;margin-top:16px;padding:12px;border:0;background:transparent;font-size:14px;font-weight:600;color:#1D2223}
+
   </style>
 </head>
 <body>
@@ -248,6 +276,15 @@
   const validIban=full=>/^IR\d{24}$/.test(full)&&ibanRemainder(full.slice(4)+'1827'+full.slice(2,4))===1;
   const bankFromIban=full=>{if(!/^IR\d{5}/.test(full)) return null; if(/^IR\d{2}05700777\d{14}$/.test(full)) return bank('wepod'); if(/^IR\d{2}0560611828\d{12}$/.test(full)) return bank('blue'); const code=full.substring(4,7); return BANKS.find(b=>b.code===code && b.id!=='wepod' && b.id!=='blue') || null;};
   const sampleIban=b=>{const national=b.id==='wepod'?'05700777'+'12345678901234':b.id==='blue'?'0560611828'+'123456789012':b.code+'0012345678901234567'; const check=String(98-ibanRemainder(national+'182700')).padStart(2,'0'); return 'IR'+check+national;};
+  const formatIban=full=>{
+    const d=String(full||'').slice(2);
+    if(!/^\d{24}$/.test(d))return full;
+    return 'IR | '+[d.slice(0,2),d.slice(2,6),d.slice(6,10),d.slice(10,14),d.slice(14,18),d.slice(18,22),d.slice(22)].join(' ');
+  };
+  const splitOwner=ownerName=>{
+    const parts=String(ownerName||'').trim().split(/\s+/);
+    return {first:parts[0]||'',last:parts.slice(1).join(' ')};
+  };
   const icon=(name,size=20)=>{
     const paths={
       arrow:'<path d="M5 12h14m-6-6 6 6-6 6"/>',
@@ -286,13 +323,42 @@
   }
   function add(){
     const b=bankFromIban(ibanFull());
-    const recognized=!!(b && validIban(ibanFull()) && S.inquiry && S.inquiry.iban===ibanFull());
-    const canInquire=!!(b && validIban(ibanFull()) && !S.inquiryPending && !recognized);
-    const canSave=recognized && S.accounts.length<3;
-    $('screen').innerHTML=shell('افزودن شماره شبا',true)+`<div class="page add-page-current"><div class="add-header"><h3>شماره شبا یا شماره‌ی اوزون کارت</h3></div><div class="current-entry"><div class="iban-field"><input id="iban" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="0000 0000 0000 0000" maxlength="40" value="${S.iban}" /></div><button class="current-primary ${canInquire||canSave?'enabled':''}" data-action="${recognized?'save':'inquire'}" ${canInquire||canSave?'':'disabled'}>${recognized?'ثبت حساب بانکی':(S.inquiryPending?'در حال دریافت اطلاعات حساب...':'دریافت اطلاعات حساب')}</button></div>${recognized?`<div class="support-card"><div class="support-head">${badge(b)}<div class="support-copy"><strong>بانک ${b.name}</strong><span>${S.inquiry.owner}</span></div></div><div class="support-meta"><span class="support-state ${b.instant?'instant':'ach'}">${icon(b.instant?'bolt':'clock',15)} ${b.instant?'پشتیبانی از تسویه لحظه‌ای':'فقط انتقال پایا'}</span><span class="support-owner">${S.inquiry.owner}</span></div></div>`:''}<button class="subtle-link" data-action="discover"><span><span>بانک‌های دارای تسویه لحظه‌ای</span><small>ببینید کدام بانک‌ها این قابلیت را دارند</small></span>${icon('left',18)}</button><details class="prototype-details helper-sheet" id="demo-helper" ${S.newBank?'open':''}><summary>${icon('info',15)} شبیه‌سازی نمونه اولیه</summary><div class="bank-options">${BANKS.map(x=>`<button class="bank-option ${x.id===S.newBank?'current':''}" data-action="demo" data-bank="${x.id}">${x.name}</button>`).join('')}</div></details></div>`;
+    const ready=!!(b&&validIban(ibanFull())&&!S.inquiryPending);
+    const buttonLabel=S.inquiryPending?'<span class="inquiry-spinner"></span>در حال دریافت اطلاعات حساب…':'دریافت اطلاعات حساب';
+    $('screen').innerHTML=shell('افزودن شماره شبا',true)+
+      '<div class="page add-page-current">'+
+      '<div class="add-header"><h3>شماره شبا یا شماره‌ی اوزون کارت</h3></div>'+
+      '<div class="current-entry"><div class="iban-field">'+
+      '<input id="iban" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="0000 0000 0000 0000" maxlength="40" value="'+S.iban+'" '+(S.inquiryPending?'disabled':'')+' /></div>'+
+      '<button class="current-primary '+(ready||S.inquiryPending?'enabled':'')+'" data-action="inquire" '+(!ready?'disabled':'')+'>'+buttonLabel+'</button></div>'+
+      '<button class="subtle-link" data-action="discover"><span><span>کدام بانک‌ها تسویه لحظه‌ای دارند؟</span><small>مشاهده بانک‌های پشتیبانی‌شده</small></span>'+icon('left',18)+'</button>'+
+      '<details class="prototype-details helper-sheet" id="demo-helper" '+(S.newBank?'open':'')+'><summary>'+icon('info',15)+' شماره شبای آزمایشی برای تست</summary>'+
+      '<div class="bank-options">'+BANKS.map(x=>'<button class="bank-option '+(x.id===S.newBank?'current':'')+'" data-action="demo" data-bank="'+x.id+'">'+x.name+'</button>').join('')+'</div></details></div>';
     $('footer').innerHTML='';
   }
-  function render(){S.screen==='home'?home():add();renderModal()}
+  function confirmAccount(){
+    const b=bankFromIban(S.inquiry?.iban||'');
+    if(!b||!S.inquiry){S.screen='add';add();return}
+    const n=splitOwner(S.inquiry.owner);
+    const settlement=b.instant?'<span class="capability instant">'+icon('bolt',12)+' تسویه لحظه‌ای</span>':'<span class="capability ach">'+icon('clock',12)+' فقط تسویه پایا</span>';
+    $('screen').innerHTML=shell('تأیید اطلاعات حساب',true)+
+      '<div class="page confirm-page">'+
+      '<p class="confirm-label">شماره شبا</p>'+
+      '<div class="confirm-iban" dir="ltr">'+formatIban(S.inquiry.iban)+'</div>'+
+      '<section class="confirm-details">'+
+      '<div class="confirm-row"><span class="field-label">نام</span><strong>'+n.first+'</strong></div>'+
+      '<div class="confirm-row"><span class="field-label">نام خانوادگی</span><strong>'+n.last+'</strong></div>'+
+      '<div class="confirm-row"><span class="field-label">بانک</span><strong class="bank-result">'+badge(b)+'بانک '+b.name+'</strong></div>'+
+      '<div class="confirm-row status-row"><span class="field-label">روش تسویه</span>'+settlement+'</div>'+
+      '</section>'+
+      '<p class="confirm-note">متفاوت بودن نام دارنده حساب با نام راننده مانع ثبت حساب نیست.</p>'+
+      '<button class="confirm-primary" data-action="save">اضافه کردن حساب</button>'+
+      '<button class="confirm-edit" data-action="edit-iban">ویرایش شماره شبا</button>'+
+      '</div>';
+    $('footer').innerHTML='';
+  }
+
+  function render(){if(S.screen==='home')home();else if(S.screen==='confirm')confirmAccount();else add();renderModal()}
   function renderModal(){
     if(!S.modal){$('modal').innerHTML='';return}
     let body='';
@@ -309,7 +375,7 @@
   }
   let toastTimeout;
   function toast(msg){$('toast').innerHTML=`<div class="toast" role="status">${msg}</div>`;clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('toast').innerHTML='',2900)}
-  function back(){if(S.modal){S.modal=null;renderModal()}else if(S.screen==='add'){S.screen='home';render()}else toast('شما در صفحه نخست نمونه اولیه هستید.')}
+  function back(){if(S.modal){S.modal=null;renderModal()}else if(S.screen==='confirm'){S.screen='add';S.inquiry=null;render()}else if(S.screen==='add'){S.screen='home';render()}else toast('شما در صفحه نخست نمونه اولیه هستید.')}
   function handle(e){
     const btn=e.target.closest('[data-action]');if(!btn)return;
     const act=btn.dataset.action;
@@ -336,16 +402,25 @@
       S.newBank=b.id; S.iban=sampleIban(b).slice(2); S.inquiry=null; S.inquiryPending=false; render();
     }
     else if(act==='inquire'&&!btn.disabled){
-      const full=ibanFull(), b=bankFromIban(full);
-      if(!b || !validIban(full)) return;
-      S.inquiryPending=true; render();
-      setTimeout(()=>{ if(S.screen!=='add' || ibanFull()!==full) return; S.inquiryPending=false; S.inquiry={iban:full,owner:b.sampleOwner}; S.newBank=b.id; render(); }, 500);
+      const full=ibanFull(),b=bankFromIban(full);
+      if(!b||!validIban(full))return;
+      S.inquiry=null;S.inquiryPending=true;render();
+      setTimeout(()=>{
+        if(S.screen!=='add'||ibanFull()!==full)return;
+        S.inquiryPending=false;S.inquiry={iban:full,owner:b.sampleOwner};
+        S.newBank=b.id;S.screen='confirm';render();
+      },700);
     }
-    else if(act==='save'&&!btn.disabled){
-      const b=bankFromIban(ibanFull()); if(!b) return;
+    else if(act==='edit-iban'){S.screen='add';S.inquiry=null;S.inquiryPending=false;render()}
+    else if(act==='save'&&!btn.disabled&&S.screen==='confirm'){
+      const b=bankFromIban(S.inquiry?.iban||'');
+      if(!b||!S.inquiry||!validIban(S.inquiry.iban)||S.accounts.length>=3)return;
       const id=Math.max(0,...S.accounts.map(x=>x.id))+1;
-      S.accounts.push({id,bank:b.id,owner:S.inquiry?.owner||b.sampleOwner}); S.selected=id; S.screen='home'; S.editing=false; render(); toast('حساب بانکی نمونه ثبت و انتخاب شد.');
+      S.accounts.push({id,bank:b.id,iban:S.inquiry.iban,owner:S.inquiry.owner});
+      S.selected=id;S.screen='home';S.editing=false;S.inquiry=null;render();
+      toast('حساب بانکی نمونه ثبت و انتخاب شد.');
     }
+
     else if((act==='instant'||act==='ach')&&!btn.disabled){S.review=act;S.modal='review';renderModal()}
     else if(act==='review-confirm'){S.modal=null;renderModal();toast('عملیات صرفاً شبیه‌سازی شد؛ هیچ وجهی منتقل نشد.')}
   }
